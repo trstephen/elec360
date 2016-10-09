@@ -1,2 +1,13 @@
 \section{Conclusion}\label{sec:conclusion}
-Justify conclusions and results.
+In this experiment we were able to derive three different sets of parameters for the model of the DC motor.
+The parameters derived from the prelab calculations did a poor job of approximating the motor's behavior because they make incorrect assumptions about the value of $R_m$ and $k_m$ of the motor.
+Measurements of the motor in static conditions and parameter derivation from physical relations provided parameters for an adequate model.
+However, the assumptions that $L_m$ and $T_d$ were non-existent result in a consistent underestimation of the motor's maximum angular velocity.
+The parameters derived from the bump test, $K = \SI{18.8}{\radian\per\volt\per\second}$ and $\tau = \SI{0.091}{\second}$, almost perfectly model the behavior of the motor.
+The model does not account for the decline in velocity at low voltages because it ignores the Coloumb friction in the motor which is greatest around \SI{\pm 0.4}{\volt} and negligible beyond \SI{2}{\volt}.
+Manual tuning of $K$ and $\tau$ could not significantly improve on the accuracy of the bump test parameters.
+
+This experiment did not investigate the model's behavior at the upper end of its validity: where a large enough $u_m$ is supplied so that the gain becomes saturated.
+Future experiments with this motor must take into account the existence of this upper limit.
+The model parameters we have derived will be most accurate when $u_m$ has an operational range of \SIrange{2}{5}{\volt}.
+
