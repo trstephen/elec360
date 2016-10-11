@@ -13,11 +13,11 @@ Using KVL in Figure~\ref{fig:motorschematic}, we can derive the relationship bet
 \begin{equation}\label{eq:KVL}
   u_m(t) = R_m i_m(t) + L_m \pdv{i_m(t)}{t} + k_m \omega_m.
 \end{equation}
-Since $i_m(t) \approx \SI{0}{\ampere}$ at steady state, \eqref{eq:KVL} can be simplified to
+Since $i_m(t) \approx \SI{0}{\ampere}$ at steady state, \eqref{eq:KVL} can be simplified and evaluated with the parameters from the manual
 \begin{equation*}
   \omega_{m\>max} = {u_{m\>max} \over k_m} = {\SI{15}{\volt} \over \SI{0.0502}{\volt\second\per\radian}} = \SI{298.8}{\radian\per\second}.
 \end{equation*}
-$\omega_{m\>max}$ can be obtained directly from the QICii software.
+For the experiment motor, $\omega_{m\>max}$ can be obtained directly from the QICii software.
 The response for $u_{m\>max} = \SI{5}{\volt}$ is shown in Figure~\ref{fig:wmax}.
 \begin{figure}[t!]
   \centering
@@ -65,7 +65,11 @@ Table~\ref{table:Rm} summarizes these results.
 \end{table}
 
 The $R_{m\>avg}$ is nearly 50\% larger than the value of \SI{10.6}{\ohm} used for calculations in the prelab.
-\todo[inline]{Come up with a convincing explanation for this}
+The source of this error can be seen in Figure~\ref{fig:motorschematic}.
+$R_m$ is modeled as a lumped component but it represents the distributed resistance in the wires \textit{and} the motor.
+The motor will experience a non-linear Coulomb friction at low voltages which this model lumps in to $R_m$.
+The non-linear nature of the $R_m$ manifests as a spike at \SI{1}{\volt}.
+Thus, the assumption that $R_m$ is constant and the motor is frictionless cause an underestimation in the prelab values.
 
 \subsection{Motor torque constant}\label{sec:mtorque}
 Similar to the approach in Section~\ref{sec:mres}, we can determine $k_m$ by analyzing the oppopsite static condition of the motor.
@@ -96,12 +100,12 @@ Table~\ref{table:km} summarizes the results, with $u_m$ varied over the same ran
 \end{table}
 
 This is larger than the prelab value of $k_m = \SI{0.0502}{\volt\second\per\radian}$.
-\todo[inline]{Come up with a convincing explanation for this}
+This is because the prelab model underestimates $R_m$ and, since the motor does not perfectly conserve energy, $\omega_m$ will be slower than expected because of energy loss to friction and internal resistance.
 
 \subsection{Open loop transfer function parameters from static analysis}\label{sec:tf-static}
 Taking the Laplace transform of \eqref{eq:KVL} we can derive a first order transfer function of the form in \eqref{eq:tf}, where the open loop transfer function $G(s) = {\Omega_m(s) \over U_m(s)}$.
 \begin{equation}\label{eq:KVL-tf}
-  U_m(s) = R_m I_m + s L_m I_m + k_m \Omega_m
+  U_m(s) = R_m I_m(s) + s L_m I_m(s) + k_m \Omega_m(s)
 \end{equation}
 \cite{lab-manual} tells us that
 \begin{equation*}
@@ -114,12 +118,12 @@ The previous equation can be written in the Laplace domain as
 \end{equation}
 Substituting \eqref{eq:tf-load} into \eqref{eq:KVL-tf} yeilds
 \begin{equation*}
-  {\Omega_m(s) \over U(s)} = {k_m \over L_m J_{eq}s^2 + R_m J_{eq} s + {k_m}^2}.
+  {\Omega_m(s) \over U_m(s)} = {k_m \over L_m J_{eq}s^2 + R_m J_{eq} s + {k_m}^2}.
 \end{equation*}
 For a small motor $R_m \gg L_m$, so the effect of $L_m$ can be neglected in our linear model.
 The previous equation can be rewritten as
 \begin{equation*}
-  {\Omega_m(s) \over U(s)} = { 1 \over k_m \left( {J_{eq} R_m \over {k_m}^2} s + 1 \right)}.
+  {\Omega_m(s) \over U_m(s)} = { 1 \over k_m \left( {J_{eq} R_m \over {k_m}^2} s + 1 \right)}.
 \end{equation*}
 Comparing the previous equation with the form of \eqref{eq:tf} implies
 \begin{equation}\label{eq:static-params}
@@ -134,7 +138,7 @@ Comparing the previous equation with the form of \eqref{eq:tf} implies
 \end{align*}
 $J_{eq}$, $k_{m\>avg}$ and $R_{m\>avg}$ can be substituted into \eqref{eq:static-params} to yeild $K = \SI{17.55}{\radian\per\volt\per\second}$ and $\tau = \SI{0.106}{\second}$.
 The prelab has $K = \SI{19.92}{\radian\per\volt\per\second}$ and $\tau = \SI{0.093}{\second}$.
-\todo[inline]{Come up with a convincing explanation for this}
+The smaller gain and larger time constant represent the losses in the system to internal resistance and friction as well as the effect of $L_m$ to inhibit motor acceleration.
 
 \subsection{Bump test}\label{sec:bump}
 $K$ and $\tau$ can also be derived by only measuring the input $u_m$ and output $\omega_m$ during the application of a step input.
@@ -152,6 +156,7 @@ Substituting \eqref{eq:dynamic-gain} into \eqref{eq:dynamic-yt} at $t = \tau$ gi
   y(\tau) = \Delta y \left(1 - e^{-1}\right) \approx 0.63 \Delta y.
 \end{equation}
 The step input $u_m$ will be approximated by a square wave varying between \SI{1}{\volt} and \SI{5}{\volt} ($\Delta u = \SI{4}{\volt}$) and a frequency of \SI{0.4}{\hertz}.
+The period between edges is long enough so that the motor will achieve its steady state behavior.
 Figure~\ref{fig:step} shows the response of the DC motor to this input.
 \pagebreak
 \begin{figure}[tbph]
@@ -161,12 +166,12 @@ Figure~\ref{fig:step} shows the response of the DC motor to this input.
   \label{fig:step}
 \end{figure}
 
-The response of the motor is $\Delta y = \SI{75}{\volt}$.
+The response of the motor is $\Delta y = \SI{75}{\radian\per\second}$.
 It reaches $0.63 \Delta y$ at $\Delta t = \SI{0.091}{\second} = \tau$. \eqref{eq:dynamic-gain} gives $K = \SI{18.75}{\radian\per\volt\per\second}$.
-\todo[inline]{Come up with a convincing explanation for this}
+These values are closer to the prelab values than those in Section~\ref{sec:tf-static}.
 
 \subsection{Model validation}\label{sec:validation}
-QUCii will take values of $K$ and $\tau$ use them to generate an expected response to the measured input.
+QUCii will take values of $K$ and $\tau$ and use them to generate an expected response to the measured input.
 The square wave from Section~\ref{sec:bump} is reused as a step input.
 Figure~\ref{fig:validation} shows models with parameters derived from the prelab, static analysis and bump test.
 The model parameters in Figure~\ref{subfig:tuned} were determined be the best fit from manual parameter variation.
@@ -205,7 +210,7 @@ The static analysis model performs considerably better than the prelab model but
 The bump test model performs extremely well.
 It tracks the ``up'' response perfectly.
 The model deviates very slightly on the ``down'' response, where it fails to track the observed decay of $\omega_m$ at steady state.
-This deviance likely due to a breakdown of the linear model as $u_m \rightarrow \SI{0.4}{\volt}$, the voltage at which the motor overcomes the Coulomb friction and begins to rotate.
+This deviance is likely due to a breakdown of the linear model as $u_m \rightarrow \SI{0.4}{\volt}$, the voltage at which the motor overcomes the Coulomb friction and begins to rotate.
 Observe the spike in $R_m$ in Table~\ref{table:Rm} at $u_m = \SI{1.00}{\volt}$.
 This suggests Coulomb friction is significant over a range of values and manifests as non-linear behavior at low voltages. 
 
