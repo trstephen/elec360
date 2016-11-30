@@ -1,0 +1,21 @@
+\section{Discussion}\label{sec:discussion}
+We completed pyramid stacking with angular and GUI modes but were unsuccessful with linear command mode.
+
+The controller for angular and linear mode does not allow programs to be altered after creation.
+This frustrated development because motions were omitted from points during programming.
+The errors were not apparent until playback and even though it was obvious where to inject another point the series could not be altered and the entire series had to be abandoned.
+
+Linear mode proved to be the most challenging because its method for resolving point transitions masked potential errors.
+Linear mode execution attempts to transition between points by moving each joint in succession to its final position.
+If the robot takes a path through space $A \rightarrow B$, the path is decomposed into $A \rightarrow B^{\prime}_{shoulder} \rightarrow B^{\prime}_{elbow} \rightarrow B^{\prime}_{wrist} \rightarrow B^{\prime}_{gripper} \rightarrow B$.
+However, the (manual) process to determine the next point involves moving several joints in non-sequential order.
+We experienced frequent movement out-of-bounds errors when playing back the sequence of linear points.
+
+Though it is not mentioned in the lab manual, our experience in the lab indicates that there is a per-joint reordering occurring in linear mode.
+First, the arm was not observed executing parallel joint manipulations similar to those it performed in angular mode.
+Second, if an out-of-bounds error occurred in the elbow then the gripper was never observed to move even though the bounds for the two joints are independent.
+
+Programming with the GUI was very similar to angular mode with the handheld controller.
+The GUI provided the same set of functions as the controller but the input was simpler because the inputs were mapped to a picture of the robot joints (see Figure~\ref{fig:gui}) instead of what felt like random buttons on the controller.
+This allowed for faster command input than angular mode and quicker completion of the stacking task.
+
