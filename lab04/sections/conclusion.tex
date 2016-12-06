@@ -1,0 +1,5 @@
+\section{Conclusion}\label{sec:conclusion}
+We were able to complete the stacking task with angular and GUI entry modes but were unsuccessful with linear entry mode.
+The difficulty with linear mode was the result of invalid joint positions demanded by the per-joint decomposition.
+This naive method for solving this problem is to store more points, since errors arise from the composition of many movements.
+A more optimal solution is to mirror the decomposition algorithm in point placement -- always start movements from the shoulder out to the gripper and create new points whenever you have to correct movement ``up'' the arm.
